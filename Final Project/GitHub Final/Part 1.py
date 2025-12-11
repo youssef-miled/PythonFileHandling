@@ -107,7 +107,7 @@ print("Average TotalPay by Year:")
 print(avg_totalpay_by_year.to_string())
 
 #---------------------------------------------------------------
-#Part 5:
+#Part 6:
 print("--- PART VI: Joining ---")
 
 data = {
@@ -131,11 +131,14 @@ csv_filename = "merged_data.csv"
 merged_df.to_csv(csv_filename, index=False)
 print("Saved file as "+csv_filename)
 #---------------------------------------------------------------
+#Part 7:
+print("--- PART VII: Interactive Investigation Script ---") 
 def checkJobTitle(title,keyword):
     if not isinstance(title,str):
         return False
     return keyword.lower() in title.lower()
 while True:
+    print("PS: Type 'exit' to quit.")
     user_keyword=input("Enter a keyword to search in job titles: ")
     if user_keyword.lower()=='exit':
         break
@@ -143,12 +146,16 @@ while True:
     result=df[res]
     if result.empty:
         print("No matching job titles found.")
-    count=len(df[result])
-    avg_basepay=df[result]['BasePay'].mean()
-    highest_totalpay=df[result]['TotalPay'].max()
-    print("Number of employees with '"+user_keyword+"' in job title: "+str(count))
-    print("Average BasePay: "+str(avg_basepay))
-    print(f"Highest TotalPay: "+str(highest_totalpay))
+    else:
+        count=len(result)
+        avg_basepay=result['BasePay'].mean()
+        highest_totalpay=result['TotalPay'].max()
+        print("Number of employees with '"+user_keyword+"' in job title: "+str(count))
+        print("Average BasePay: "+str(avg_basepay))
+        print(f"Highest TotalPay: "+str(highest_totalpay))
+        output_filename="custom_search.csv"
+        result.to_csv(output_filename,index=False)
+        print("Results saved to "+output_filename)
 
 
 
