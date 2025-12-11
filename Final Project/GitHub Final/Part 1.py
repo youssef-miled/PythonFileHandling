@@ -5,7 +5,7 @@ filename=r"C:\Youssef Miled\Python programming\Final Project\Data.csv"
 if not os.path.exists(filename):
     print("Could not find file")
     exit()
-aaa
+
 def count(fname,tosearch):
     with open(fname,mode='r')as f:
         reader=csv.reader(f)
@@ -82,6 +82,73 @@ print("High earners: "+str(len(jobTitle(df,"POLICE"))))
 
 #---------------------------------------------------------------
 #Part 4:
+print("--- PART IV: New Columns & Summary Statistics ---")
+
+def checkJobTitle(title,keyword):
+    if not isinstance(title,str):
+        return False
+    return keyword.lower() in title.lower()
+df['Is_Job'] = df['JobTitle'].apply(checkJobTitle, keyword="Manager")
+num_managers=df['Is_Job'].sum()
+
+avg_basepay = df['BasePay'].mean()
+print("Average BasePay: "+str(avg_basepay))
+
+print(df['JobTitle'].value_counts().head(5).to_string())
+
+print("Total Number of Employees: "+str(len(df)))
+
+#---------------------------------------------------------------
+#Part 5:
+print("--- PART V: Grouping & Aggregation ---")
+
+avg_totalpay_by_year = df.groupby('Year')['TotalPay'].mean()
+print("Average TotalPay by Year:")
+print(avg_totalpay_by_year.to_string())
+
+#---------------------------------------------------------------
+#Part 5:
+print("--- PART VI: Joining ---")
+
+data = {
+    'Agency': ['San Francisco', 'London', 'New York'], 
+    'AgencyCode': ['SF', 'LON', 'NY']
+}
+
+agency_df = pd.DataFrame(data)
+agency_df.to_csv('agency_codes.csv', index=False)
+
+print("SUCCESS: 'agency_codes.csv' has been created!")
+print(agency_df)
+
+agency_file=r"C:\Youssef Miled\Python programming\agency_codes.csv"
+if not os.path.exists(agency_file):
+    print("Could not find agency codes file")
+    exit()
+agency_df=pd.read_csv(agency_file)
+merged_df = pd.merge(df, agency_df, on='Agency', how='left')
+csv_filename = "merged_data.csv"
+merged_df.to_csv(csv_filename, index=False)
+print("Saved file as "+csv_filename)
+#---------------------------------------------------------------
+def checkJobTitle(title,keyword):
+    if not isinstance(title,str):
+        return False
+    return keyword.lower() in title.lower()
+while True:
+    user_keyword=input("Enter a keyword to search in job titles: ")
+    if user_keyword.lower()=='exit':
+        break
+    res = df['JobTitle'].apply(checkJobTitle, keyword=user_keyword)
+    result=df[res]
+    if result.empty:
+        print("No matching job titles found.")
+    count=len(df[result])
+    avg_basepay=df[result]['BasePay'].mean()
+    highest_totalpay=df[result]['TotalPay'].max()
+    print("Number of employees with '"+user_keyword+"' in job title: "+str(count))
+    print("Average BasePay: "+str(avg_basepay))
+    print(f"Highest TotalPay: "+str(highest_totalpay))
 
 
 
